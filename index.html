@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <span id="track-name"></span>
+  <div id="audio-box">
+    <audio src="" preload="auto" id="player"></audio>
+  </div>
+  <ol id="playlist"></ol>
+
+
+  <script src="./audio.js"></script>
+  <script>
+    const audioBox = document.querySelector("#audio-box");
+    const trackName = document.querySelector("#track-name");
+    const playlist = document.querySelector("#playlist");
+
+    let trackIndex = 0;
+
+    let trackList = [
+      {
+        name: "Cello Suite no. 1 - Prelude in G, BWV 1007",
+        artist: "Accou",
+        image: "Image URL",
+        src: "https://files.musopen.org/recordings/0d2b20df-6ba6-46c9-b058-62f5e7976cb0.mp3?filename=Cello+Suite+no.+1+-+Prelude+in+G,+BWV+1007.mp3&preview",
+      },
+      {
+        name: "Sung Oribe - Prelude from Cello suite no. 1",
+        artist: "Sung Oribe",
+        image: "Image URL",
+        src: "https://files.musopen.org/recordings/f5f83183-a71b-462c-bd89-6557159570e4.mp3?filename=Sung+Oribe+-+Prelude+from+Cello+suite+no.+1.mp3&preview",
+      },
+      {
+        name: "Sung Oribe - Courante from Cello suite no. 1",
+        artist: "Sung Oribe",
+        image: "Image URL",
+        src: "https://files.musopen.org/recordings/b749f2c0-7484-4c1a-9061-f637d2f1a39f.mp3?filename=Sung+Oribe+-+Courante+from+Cello+suite+no.+1.mp3&preview",
+      },
+    ];
+
+    function playlistSet() {
+      for (const track of trackList) {
+        const li = document.createElement("li");
+        li.textContent = track.name;
+        li.dataset.src = track.src;
+        li.addEventListener("click", playlistChange);
+        playlist.append(li);
+      }
+    }
+
+    function createTrack() {
+      audioBox.removeChild(audioBox.children[0]);
+      const audio = document.createElement("audio");
+
+      audio.src = trackList[trackIndex].src;
+      audio.preload = "auto";
+      audio.id = "player";
+      audioBox.append(audio)
+      var as = audiojs.createAll();
+    }
+
+    function loadTrack(trackIndex) {
+      document.querySelector("#player").src = trackList[trackIndex].src;
+
+      trackName.textContent = trackList[trackIndex].name;
+
+      audiojs.events.addListener(document.querySelector("#player"), "ended", nextTrack)
+    }
+
+    function playlistChange(event) {
+      const src = event.target.dataset.src;
+      trackIndex = trackList.findIndex((i) => i.src === src);
+      createTrack()
+      loadTrack(trackIndex);
+      playTrack();
+    }
+
+    function nextTrack() {
+      if (trackIndex < trackList.length - 1) trackIndex += 1;
+      else trackIndex = 0;
+      createTrack()
+      loadTrack(trackIndex);
+      playTrack();
+    }
+
+    function playTrack() {
+      document.querySelector("#player").play();
+    }
+
+    audiojs.events.ready(function () {
+      var as = audiojs.createAll();
+      playlistSet()
+      loadTrack(trackIndex)
+    });
+  </script>
+</body>
+
+</html>
