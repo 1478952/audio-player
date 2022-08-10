@@ -91,6 +91,7 @@
     }
 
     function playTrack() {
+      audiojs.helpers.addClass(document.querySelector(".audiojs"), "playing")
       document.querySelector("#player").play();
     }
 
