@@ -92,6 +92,8 @@
 
     function playTrack() {
       audiojs.helpers.addClass(document.querySelector(".audiojs"), "playing")
+      const lastAudioInstance = `audiojs${audiojs.instanceCount - 1}`;
+      audiojs.instances[lastAudioInstance].playing = true;
       document.querySelector("#player").play();
     }
 
